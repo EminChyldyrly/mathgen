@@ -77,10 +77,12 @@ def to_markdown(ws: Worksheet, solutions: bool = False, key: bool = True) -> str
     return "\n".join(lines)
 
 
-def to_json(ws: Worksheet) -> str:
+def to_json(ws: Worksheet, key: bool = True) -> str:
     def prob(p: Problem):
-        return dict(id=p.id, topic=p.topic, level=p.level, text=p.text, answer=p.answer_text,
-                    steps=list(p.steps))
+        data = dict(id=p.id, topic=p.topic, level=p.level, text=p.text)
+        if key:
+            data.update(answer=p.answer_text, steps=list(p.steps))
+        return data
     return json.dumps(dict(title=ws.title, seed=ws.seed,
                            variants=[[prob(p) for p in probs] for probs in ws.variants]),
                       ensure_ascii=False, indent=2)

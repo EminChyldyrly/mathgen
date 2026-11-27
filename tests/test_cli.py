@@ -1,4 +1,6 @@
 import io
+import json
+from pathlib import Path
 import os
 import tempfile
 import unittest
@@ -52,6 +54,16 @@ class TestCli(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("не удалось разобрать", out)
         self.assertEqual(run(["check", "nope", "1"])[0], 2)
+
+    def test_json_worksheet_without_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "worksheet.json"
+            code, _ = run(["worksheet", "--out", str(path), "--no-key", "--count", "2"])
+            self.assertEqual(code, 0)
+            variants = json.loads(path.read_text(encoding="utf-8"))["variants"]
+            for problem in variants[0]:
+                self.assertNotIn("answer", problem)
+                self.assertNotIn("steps", problem)
 
     def test_worksheet_formats(self):
         with tempfile.TemporaryDirectory() as d:

@@ -98,7 +98,7 @@ def main(argv=None, input_fn=input, out=None) -> int:
             from .pdf import write_pdf
             write_pdf(ws, args.out, solutions=args.solutions, key=not args.no_key)
         elif ext in ("md", "json"):
-            body = to_markdown(ws, args.solutions, not args.no_key) if ext == "md" else to_json(ws)
+            body = to_markdown(ws, args.solutions, not args.no_key) if ext == "md" else to_json(ws, key=not args.no_key)
             with open(args.out, "w", encoding="utf-8") as fh:
                 fh.write(body)
         else:
